@@ -1,0 +1,1346 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cinematica (Politecnico) – Teoria + Esercizi</title>
+
+  <!-- ===== MathJax CONFIG (PRIMA della libreria) ===== -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$']],
+        displayMath: [['$$', '$$']],
+        processEscapes: true
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    :root {
+    /* Sfondo pagina: Grigio Antracite scuro (uniforme, no sfumature) */
+    --bg: #212529; 
+    
+    /* Sfondo schede: Un grigio leggermente più chiaro per staccare */
+    --panel: #2c3034;
+    
+    /* Hover/Selezione: Grigio medio */
+    --panel2: #343a40;
+    
+    /* Bordi: Grigio chiaro per definire bene i box */
+    --stroke: #495057;
+    
+    /* Testo principale: Bianco puro (leggibilità massima) */
+    --text: #ffffff;
+    
+    /* Testo secondario: Grigio argento */
+    --muted: #adb5bd;
+    
+    /* Accento: Un azzurro più chiaro e "piatto" rispetto al blu elettrico */
+    --accent: #5c9ce6;
+    
+    /* Raggio bordi (invariato) */
+    --radius: 8px;
+  }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      background: radial-gradient(1200px 700px at 25% -10%, rgba(98,167,255,0.28), transparent 55%),
+                  radial-gradient(900px 600px at 90% 0%, rgba(61,220,151,0.18), transparent 50%),
+                  var(--bg);
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(11,18,32,0.95), rgba(11,18,32,0.65));
+      border-bottom: 1px solid var(--stroke);
+    }
+
+    .wrap{
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 18px 18px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .title{
+      display:flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 240px;
+    }
+
+    .title h1{
+      font-size: clamp(18px, 2.2vw, 28px);
+      margin:0;
+      letter-spacing: .2px;
+    }
+    .title .sub{
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tabs{
+      display:flex;
+      gap: 10px;
+      padding: 8px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.04);
+      border-radius: 999px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    }
+
+    .tabbtn{
+      border: 0;
+      cursor: pointer;
+      color: var(--muted);
+      background: transparent;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 650;
+      letter-spacing: .2px;
+      font-size: 14px;
+      transition: .15s ease;
+      white-space: nowrap;
+    }
+    .tabbtn:hover{ color: var(--text); background: rgba(255,255,255,0.06); }
+    .tabbtn.active{ color: #071021; background: var(--accent); }
+
+    main{
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 18px 18px 42px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.04));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card .hd{
+      padding: 16px 18px 12px;
+      border-bottom: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.03);
+      display:flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .card .hd h2, .card .hd h3{
+      margin: 0;
+      font-size: clamp(16px, 2vw, 20px);
+      letter-spacing: .2px;
+    }
+    .card .hd .tag{
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .card .bd{
+      padding: 16px 18px 18px;
+    }
+
+    .pillrow{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .pill{
+      padding: 8px 10px;
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .two{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 14px;
+    }
+    @media (max-width: 980px){
+      .two{ grid-template-columns: 1fr; }
+      .tabs{ width: 100%; justify-content: center; }
+      .topbar{ flex-direction: column; align-items: stretch; }
+    }
+
+    .box{
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,0.04);
+      padding: 14px 14px;
+    }
+    .box h4{
+      margin: 0 0 10px;
+      font-size: 15px;
+      letter-spacing: .2px;
+      color: rgba(255,255,255,0.9);
+    }
+    ul{
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    li{ margin: 6px 0; }
+
+    .formula{
+      border-left: 3px solid var(--accent);
+      padding: 10px 12px;
+      background: rgba(98,167,255,0.08);
+      border-radius: 10px;
+      color: rgba(255,255,255,0.88);
+      margin: 10px 0;
+      overflow-x:auto;
+    }
+
+    .note{
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    /* ===== Esercizi ===== */
+    .ex{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 14px;
+      align-items: start;
+    }
+    @media (max-width: 980px){ .ex{ grid-template-columns: 1fr; } }
+
+    .qtitle{
+      font-size: 16px;
+      font-weight: 750;
+      margin: 0 0 10px;
+    }
+    .qtext{
+      color: rgba(255,255,255,0.88);
+      font-size: 15px;
+    }
+
+    .options{
+      margin-top: 10px;
+      display:grid;
+      gap: 10px;
+    }
+    .opt{
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+      padding: 10px 10px;
+      border: 1px solid var(--stroke);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.035);
+    }
+    .opt input{ transform: translateY(2px) scale(1.15); }
+    .opt label{
+      cursor: pointer;
+      color: var(--muted);
+      width: 100%;
+    }
+
+    .side{
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toolbar{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      transition: .15s ease;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.09); }
+    .btn.primary{
+      background: rgba(98,167,255,0.18);
+      border-color: rgba(98,167,255,0.35);
+    }
+    .btn.primary:hover{ background: rgba(98,167,255,0.26); }
+    .btn.ok{
+      background: rgba(61,220,151,0.14);
+      border-color: rgba(61,220,151,0.35);
+    }
+    .btn.bad{
+      background: rgba(255,92,122,0.12);
+      border-color: rgba(255,92,122,0.35);
+    }
+
+    .timer{
+      display:flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.04);
+    }
+    .tleft{
+      display:flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 140px;
+    }
+    .tlabel{ color: var(--muted); font-size: 12px; }
+    .tval{
+      font-variant-numeric: tabular-nums;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: .6px;
+    }
+    .progress{
+      height: 8px;
+      width: 100%;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .bar{
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), rgba(98,167,255,0.55));
+    }
+
+    details{
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,0.035);
+      overflow: hidden;
+    }
+    details > summary{
+      cursor: pointer;
+      padding: 12px 12px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.9);
+      list-style: none;
+    }
+    details > summary::-webkit-details-marker { display:none; }
+    details .sol{
+      padding: 12px 12px 14px;
+      border-top: 1px solid var(--stroke);
+      color: var(--muted);
+    }
+
+    .result{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px dashed var(--stroke);
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+      min-height: 44px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .dot{
+      width: 10px; height: 10px; border-radius: 999px;
+      background: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+    .dot.ok{ background: var(--ok); border-color: rgba(61,220,151,0.75); }
+    .dot.bad{ background: var(--bad); border-color: rgba(255,92,122,0.75); }
+
+    .hidden{ display:none !important; }
+
+    /* piccoli accorgimenti per LIM */
+    .limhint{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.85);
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="title">
+        <h1>Cinematica – Preparazione Test di Ingresso (2h)</h1>
+        <div class="sub">Scheda Teoria (Unità 6–7) + Allenamento con quiz (L3_cinematica)</div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Schede">
+        <button class="tabbtn active" data-tab="teoria" role="tab" aria-selected="true">1) Teoria essenziale</button>
+        <button class="tabbtn" data-tab="esercizi" role="tab" aria-selected="false">2) Esercizi + Timer</button>
+      </div>
+    </div>
+    <div class="limhint">Suggerimento LIM: usa <kbd>CTRL</kbd>+<kbd>+</kbd>/<kbd>-</kbd> per zoom browser.</div>
+  </div>
+</header>
+
+<main>
+  <!-- =================== TAB TEORIA =================== -->
+  <section id="tab-teoria" class="grid" role="tabpanel" aria-label="Teoria">
+    <div class="card">
+      <div class="hd">
+        <h2>Unità 6 – Moto rettilineo (riassunto operativo)</h2>
+        <div class="tag">Formule + interpretazione grafici</div>
+      </div>
+      <div class="bd two">
+        <div class="box">
+          <h4>1) Impostazione del problema</h4>
+          <ul>
+            <li><b>Sistema di riferimento</b>: scegli asse e verso positivo (attenzione ai segni).</li>
+            <li><b>Posizione</b> $s(t)$, <b>spostamento</b> $\Delta s = s_2-s_1$, <b>tempo</b> $\Delta t=t_2-t_1$.</li>
+            <li>Nel moto rettilineo, spesso lo spazio percorso coincide con $|\Delta s|$ (se non ci sono inversioni di moto).</li>
+          </ul>
+
+          <div class="formula">
+            Velocità media (scalare): $$v_m=\frac{\Delta s}{\Delta t}=\frac{s_2-s_1}{t_2-t_1}$$
+            Accelerazione media: $$a_m=\frac{\Delta v}{\Delta t}=\frac{v_2-v_1}{t_2-t_1}$$
+          </div>
+
+          <h4 style="margin-top:14px;">2) Moto rettilineo uniforme (MRU)</h4>
+          <div class="formula">
+            $$v=\text{costante}\qquad s(t)=s_0+vt$$
+          </div>
+          <ul>
+            <li>Grafico $s$–$t$: retta; <b>pendenza</b> $=\;v$.</li>
+            <li>Grafico $v$–$t$: retta orizzontale; <b>area</b> sotto il grafico $=\Delta s$.</li>
+          </ul>
+        </div>
+
+        <div class="box">
+          <h4>3) Moto rettilineo uniformemente accelerato (MRUA)</h4>
+          <div class="formula">
+            Legge della velocità: $$v(t)=v_0+at$$
+            Legge oraria: $$s(t)=s_0+v_0t+\frac12at^2$$
+          </div>
+          <ul>
+            <li>Grafico $v$–$t$: retta con pendenza $a$.</li>
+            <li>Area sotto $v$–$t$: $$\Delta s=v_0t+\frac12at^2$$</li>
+          </ul>
+
+          <h4 style="margin-top:14px;">4) Formule “senza tempo” (molto usate nei quiz)</h4>
+          <div class="formula">
+            $$v^2=v_0^2+2a\,(s-s_0)$$
+          </div>
+
+          <h4 style="margin-top:14px;">5) Casi tipici</h4>
+          <ul>
+            <li><b>Caduta libera</b> (senza attrito): $a=g\approx 9{,}8\,\text{m/s}^2$ verso il basso.</li>
+            <li><b>Piano inclinato liscio</b>: $a=g\sin\theta$ lungo il piano (verso valle).</li>
+            <li>Errore frequente: confondere $g$ con $g\sin\theta$ sul piano inclinato.</li>
+          </ul>
+
+          <div class="pillrow" style="margin-top:12px;">
+            <span class="pill">Unità SI: $v$ in m/s</span>
+            <span class="pill">Unità SI: $a$ in m/s$^2$</span>
+            <span class="pill">Conversione: 1 m/s = 3.6 km/h</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="hd">
+        <h2>Unità 7 – Moto nel piano (riassunto operativo)</h2>
+        <div class="tag">MCU, radianti, moto armonico, parabolico, composizione</div>
+      </div>
+      <div class="bd two">
+        <div class="box">
+          <h4>1) Moto circolare uniforme (MCU)</h4>
+          <ul>
+            <li>Velocità tangenziale $\vec v$ <b>tangente</b> alla circonferenza (modulo costante).</li>
+            <li>Accelerazione centripeta $\vec a_c$ <b>verso il centro</b> (cambia direzione di $\vec v$).</li>
+          </ul>
+
+          <div class="formula">
+            $$a_c=\frac{v^2}{r}$$
+            Periodo e frequenza: $$T=\frac{2\pi r}{v}\qquad f=\frac1T$$
+          </div>
+
+          <h4 style="margin-top:14px;">2) Radianti e velocità angolare</h4>
+          <div class="formula">
+            Angolo in radianti: $$\alpha=\frac{\text{arco}}{r}$$
+            Conversione: $$\alpha_{\text{rad}}:\pi=\alpha_{\text{gradi}}:180^\circ$$
+            Velocità angolare: $$\omega=\frac{\Delta\alpha}{\Delta t}\quad [\omega]=\text{rad/s}$$
+          </div>
+
+          <div class="formula">
+            Relazioni fondamentali: $$v=\omega r\qquad a_c=\omega^2 r$$
+          </div>
+        </div>
+
+        <div class="box">
+          <h4>3) Moto armonico (proiezione del MCU)</h4>
+          <div class="formula">
+            Legge oraria (forma standard): $$s(t)=A\cos(\omega t+\varphi)$$
+            Accelerazione: $$a(t)=-\omega^2 s(t)$$
+          </div>
+          <ul>
+            <li>È un moto <b>periodico</b>: il periodo è $T=\frac{2\pi}{\omega}$ (se richiesto).</li>
+          </ul>
+
+          <h4 style="margin-top:14px;">4) Moto parabolico (lancio obliquo)</h4>
+          <ul>
+            <li>Si scompone in: moto uniforme in $x$ + moto uniformemente accelerato in $y$.</li>
+          </ul>
+          <div class="formula">
+            $$v_x=v_0\cos\alpha\quad(\text{costante})\qquad v_y(t)=v_0\sin\alpha-gt$$
+            $$x(t)=v_0\cos\alpha\,t\qquad y(t)=v_0\sin\alpha\,t-\frac12gt^2$$
+          </div>
+          <div class="formula">
+            (Stesso livello di partenza/arrivo) $$\text{Gittata }R=\frac{v_0^2\sin(2\alpha)}{g}$$
+            $$h_{\max}=\frac{(v_0\sin\alpha)^2}{2g}$$
+          </div>
+
+          <h4 style="margin-top:14px;">5) Composizione dei moti</h4>
+          <div class="formula">
+            Somma vettoriale: $$\vec v=\vec v_{\text{rel}}+\vec v_{\text{trasc}}$$
+          </div>
+          <ul>
+            <li>Se le velocità sono perpendicolari: $v=\sqrt{v_{\text{rel}}^2+v_{\text{trasc}}^2}$.</li>
+            <li>Nei sistemi in moto rettilineo uniforme tra loro, l’accelerazione risulta la stessa.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="hd">
+        <h2>Checklist rapida (errori tipici da evitare)</h2>
+        <div class="tag">Prima di calcolare…</div>
+      </div>
+      <div class="bd">
+        <div class="pillrow">
+          <span class="pill">1) Unità SI (m, s, m/s, m/s²)</span>
+          <span class="pill">2) Segni coerenti con l’asse</span>
+          <span class="pill">3) Moto in due fasi? (spezzare)</span>
+          <span class="pill">4) MRUA: usare $v^2=v_0^2+2a\Delta s$</span>
+          <span class="pill">5) Circolare: $a_c=v^2/r=\omega^2 r$</span>
+          <span class="pill">6) Parabolico: $v_x$ costante, $a_y=-g$</span>
+        </div>
+        <div class="note">Nota: la pagina usa MathJax da CDN (serve connessione Internet, a meno di usare una copia locale della libreria).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== TAB ESERCIZI =================== -->
+  <section id="tab-esercizi" class="grid hidden" role="tabpanel" aria-label="Esercizi">
+    <div class="card">
+      <div class="hd">
+        <h2>Esercizi (L3_cinematica) – Testo + scelte + svolgimento a comparsa</h2>
+        <div class="tag">Timer 2:00 per esercizio</div>
+      </div>
+      <div class="bd">
+        <div class="pillrow">
+          <span class="pill">Consiglio: 2 minuti → prima scegli formula, poi numeri</span>
+          <span class="pill">Usa “Verifica” per controllare la risposta</span>
+          <span class="pill">“Mostra svolgimento” per la correzione guidata</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== ESERCIZI LIST ====== -->
+    <div id="exercise-list"></div>
+  </section>
+</main>
+
+<script>
+  // =================== TAB SWITCH ===================
+  const tabBtns = document.querySelectorAll('.tabbtn');
+  const tabTeoria = document.getElementById('tab-teoria');
+  const tabEsercizi = document.getElementById('tab-esercizi');
+
+  function setTab(name){
+    const teoriaOn = (name === 'teoria');
+    tabTeoria.classList.toggle('hidden', !teoriaOn);
+    tabEsercizi.classList.toggle('hidden', teoriaOn);
+    tabBtns.forEach(b => {
+      const active = b.dataset.tab === name;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    // scroll to top for LIM clarity
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  tabBtns.forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+
+  // =================== EXERCISES DATA ===================
+  const exercises = [
+    {
+      id: "ex1",
+      title: "Caduta libera – altezza edificio",
+      text: "Un corpo lasciato cadere dal tetto di un palazzo impatta al suolo dopo $t=5\\,\\text{s}$. Su un pianeta senza atmosfera con accelerazione di gravità $g=6\\,\\text{m/s}^2$, qual è l'altezza dell'edificio?",
+      options: [
+        ["A", "$h=750\\,\\text{m}$"],
+        ["B", "$h=75\\,\\text{m}$"],
+        ["C", "$h=300\\,\\text{m}$"],
+        ["D", "$h=30\\,\\text{m}$"],
+        ["E", "$h=100\\,\\text{m}$"]
+      ],
+      correct: "B",
+      solution: `
+        <p><b>Strategia</b>: caduta libera da fermo ⇒ MRUA con $v_0=0$ e $s_0=0$ (prendiamo verso il basso positivo).</p>
+        <div class="formula">$$h=\\frac12 g t^2$$</div>
+        <p>Sostituisco: $$h=\\frac12\\cdot 6\\cdot (5)^2=3\\cdot 25=75\\,\\text{m}.$$</p>
+        <p><b>Risposta</b>: B.</p>
+        <p><b>Errore tipico</b>: usare $h=gt^2$ (manca il $1/2$).</p>
+      `
+    },
+    {
+      id: "ex2",
+      title: "Lancio verticale – tempo di volo",
+      text: "Una palla è lanciata verticalmente verso l'alto con velocità iniziale $v_0$ e torna a terra dopo un tempo $t_v$. Se la velocità iniziale raddoppia ($v_0' = 2v_0$), come cambia $t_v$?",
+      options: [
+        ["A", "Raddoppia"],
+        ["B", "Aumenta di 8 volte"],
+        ["C", "Quadruplica"],
+        ["D", "Impossibile rispondere senza conoscere l'altezza massima"],
+        ["E", "Resta invariato"]
+      ],
+      correct: "A",
+      solution: `
+        <p><b>Idea chiave</b>: per un lancio verticale (senza attrito) il tempo di salita è $t_{\\uparrow}=\\frac{v_0}{g}$; discesa uguale ⇒ $t_v=\\frac{2v_0}{g}$.</p>
+        <div class="formula">$$t_v' = \\frac{2(2v_0)}{g}=2\\,\\frac{2v_0}{g}=2t_v$$</div>
+        <p><b>Risposta</b>: A.</p>
+      `
+    },
+    {
+      id: "ex3",
+      title: "Piano inclinato liscio – tempo di discesa",
+      text: "Un corpo parte da fermo dalla cima di un piano inclinato liscio di lunghezza $L=2{,}5\\,\\text{m}$ e angolo $\\theta=30^\\circ$. Con $g=10\\,\\text{m/s}^2$, il tempo per raggiungere la base è:",
+      options: [
+        ["A", "$t=2\\,\\text{s}$"],
+        ["B", "$t=1\\,\\text{s}$"],
+        ["C", "$t=4\\,\\text{s}$"],
+        ["D", "Non si può stabilire senza conoscere la massa"],
+        ["E", "$t=3\\,\\text{s}$"]
+      ],
+      correct: "B",
+      solution: `
+        <p><b>Strategia</b>: lungo il piano c'è MRUA con accelerazione $a=g\\sin\\theta$.</p>
+        <div class="formula">$$a=g\\sin 30^\\circ=10\\cdot\\frac12=5\\,\\text{m/s}^2$$</div>
+        <p>Da fermo: $L=\\frac12 a t^2$ ⇒</p>
+        <div class="formula">$$t=\\sqrt{\\frac{2L}{a}}=\\sqrt{\\frac{2\\cdot 2{,}5}{5}}=\\sqrt{1}=1\\,\\text{s}$$</div>
+        <p><b>Risposta</b>: B.</p>
+        <p><b>Errore tipico</b>: usare $a=g$ invece di $g\\sin\\theta$.</p>
+      `
+    },
+    {
+      id: "ex4",
+      title: "Curva – accelerazione centripeta",
+      text: "Un'automobile viaggia a $v=10\\,\\text{m/s}$ percorrendo una curva di raggio $r=1\\,\\text{km}$. Quanto vale l'accelerazione centripeta?",
+      options: [
+        ["A", "$0{,}1\\,\\text{m/s}^2$"],
+        ["B", "$1\\,\\text{m/s}^2$"],
+        ["C", "$10\\,\\text{m/s}^2$"],
+        ["D", "$100\\,\\text{m/s}^2$"],
+        ["E", "Non è possibile senza conoscere il tempo di percorrenza"]
+      ],
+      correct: "A",
+      solution: `
+        <p><b>Formula</b>: $a_c=\\frac{v^2}{r}$.</p>
+        <div class="formula">$$r=1\\,\\text{km}=1000\\,\\text{m} \\quad\\Rightarrow\\quad a_c=\\frac{10^2}{1000}=\\frac{100}{1000}=0{,}1\\,\\text{m/s}^2$$</div>
+        <p><b>Risposta</b>: A.</p>
+      `
+    },
+    {
+      id: "ex5",
+      title: "Lancio verticale – velocità iniziale da altezza massima",
+      text: "Una moneta viene lanciata verso l'alto fino a un'altezza di $50\\,\\text{cm}$ dal punto di lancio. Quanto vale la velocità iniziale? (Usa $g\\approx 10\\,\\text{m/s}^2$)",
+      options: [
+        ["A", "Circa $3\\,\\text{m/s}$"],
+        ["B", "Circa $10\\,\\text{m/s}$"],
+        ["C", "Circa $0{,}33\\,\\text{m/s}$"],
+        ["D", "Non si può rispondere senza conoscere la massa"],
+        ["E", "Circa $9\\,\\text{m/s}$"]
+      ],
+      correct: "A",
+      solution: `
+        <p><b>Idea</b>: al culmine $v=0$. Uso la relazione senza tempo: $v^2=v_0^2-2gh$.</p>
+        <div class="formula">$$0=v_0^2-2gh\\Rightarrow v_0=\\sqrt{2gh}$$</div>
+        <p>Con $h=0{,}50\\,\\text{m}$ e $g=10$:</p>
+        <div class="formula">$$v_0=\\sqrt{2\\cdot 10\\cdot 0{,}5}=\\sqrt{10}\\approx 3{,}16\\,\\text{m/s}$$</div>
+        <p><b>Risposta</b>: A.</p>
+      `
+    },
+    {
+      id: "ex6",
+      title: "MCU – dal valore di $a_c$ al tachimetro",
+      text: "Un'automobile è soggetta a un'accelerazione puramente centripeta $a_c=0{,}1\\,\\text{m/s}^2$ su una pista circolare di raggio $R=1\\,\\text{km}$. Che valore segna il tachimetro (velocità)?",
+      options: [
+        ["A", "$100\\,\\text{km/h}$"],
+        ["B", "$100\\,\\text{m/s}$"],
+        ["C", "Velocità crescente (moto accelerato)"],
+        ["D", "$10\\,\\text{m/s}$"],
+        ["E", "$36\\,\\text{m/s}$"]
+      ],
+      correct: "D",
+      solution: `
+        <p><b>Formula</b>: $a_c=\\frac{v^2}{R}$ ⇒ $v=\\sqrt{a_cR}$.</p>
+        <div class="formula">$$R=1000\\,\\text{m}\\quad\\Rightarrow\\quad v=\\sqrt{0{,}1\\cdot 1000}=\\sqrt{100}=10\\,\\text{m/s}$$</div>
+        <p><b>Risposta</b>: D.</p>
+        <p><b>Nota concettuale</b>: il modulo di $v$ può essere costante anche se c'è accelerazione (perché cambia la direzione).</p>
+      `
+    },
+    {
+      id: "ex7",
+      title: "MRUA – velocità dopo uno spazio (da fermo)",
+      text: "Un'automobile parte da ferma e accelera con accelerazione costante $a=10\\,\\text{m/s}^2$. Qual è la velocità dopo aver percorso $s=45\\,\\text{m}$?",
+      options: [
+        ["A", "$20\\,\\text{m/s}$"],
+        ["B", "$50\\,\\text{m/s}$"],
+        ["C", "$5\\,\\text{m/s}$"],
+        ["D", "$40\\,\\text{m/s}$"],
+        ["E", "$30\\,\\text{m/s}$"]
+      ],
+      correct: "E",
+      solution: `
+        <p><b>Metodo rapido</b> (senza tempo): $v^2=v_0^2+2as$ con $v_0=0$.</p>
+        <div class="formula">$$v^2=2\\cdot 10\\cdot 45=900\\Rightarrow v=\\sqrt{900}=30\\,\\text{m/s}$$</div>
+        <p><b>Risposta</b>: E.</p>
+      `
+    },
+    {
+      id: "ex8",
+      title: "Velocità media – metà tempo a due velocità",
+      text: "Un treno viaggia per metà del tempo a $v_1=108\\,\\text{km/h}$ e per l'altra metà a $v_2=144\\,\\text{km/h}$. Qual è la velocità media?",
+      options: [
+        ["A", "$35\\,\\text{m/s}$"],
+        ["B", "$15\\,\\text{m/s}$"],
+        ["C", "$25\\,\\text{m/s}$"],
+        ["D", "$50\\,\\text{m/s}$"],
+        ["E", "$45\\,\\text{m/s}$"]
+      ],
+      correct: "A",
+      solution: `
+        <p><b>Trucco</b>: se i tempi sono uguali, la velocità media è la media aritmetica: $\\bar v=\\frac{v_1+v_2}{2}$.</p>
+        <p>Converto: $108\\,\\text{km/h}=30\\,\\text{m/s}$, $144\\,\\text{km/h}=40\\,\\text{m/s}$.</p>
+        <div class="formula">$$\\bar v=\\frac{30+40}{2}=35\\,\\text{m/s}$$</div>
+        <p><b>Risposta</b>: A.</p>
+        <p><b>Errore tipico</b>: usare la media aritmetica quando invece è “metà spazio” (lì serve media armonica).</p>
+      `
+    },
+    {
+      id: "ex9",
+      title: "Moto circolare – cosa si ricava da $\\omega$ e $r$",
+      text: "In un moto circolare, conoscendo velocità angolare $\\omega$ e raggio $r$, quale grandezza è sicuramente calcolabile?",
+      options: [
+        ["A", "Nessuna delle altre risposte è corretta"],
+        ["B", "Si può calcolare l'accelerazione tangenziale se si conosce anche la massa"],
+        ["C", "Si può calcolare l'accelerazione tangenziale se si conoscono anche massa e accelerazione centripeta"],
+        ["D", "Si può calcolare la velocità tangenziale"],
+        ["E", "Si può calcolare la forza centripeta"]
+      ],
+      correct: "D",
+      solution: `
+        <p><b>Relazione fondamentale</b>: $$v=\\omega r$$</p>
+        <p>Con soli $\\omega$ e $r$ posso trovare $v$. Per la forza centripeta servirebbe anche la massa: $F_c=ma_c$.</p>
+        <p><b>Risposta</b>: D.</p>
+      `
+    },
+    {
+      id: "ex10",
+      title: "MCU – velocità angolare",
+      text: "Un corpo compie moto circolare uniforme su una circonferenza di raggio $R=0{,}2\\,\\text{m}$ con velocità $v=2\\,\\text{m/s}$. Quanto vale $\\omega$?",
+      options: [
+        ["A", "$2\\pi\\,\\text{rad/s}$"],
+        ["B", "$4\\pi\\,\\text{rad/s}$"],
+        ["C", "$0{,}4\\,\\text{rad/s}$"],
+        ["D", "$1\\,\\text{rad/s}$"],
+        ["E", "$10\\,\\text{rad/s}$"]
+      ],
+      correct: "E",
+      solution: `
+        <p><b>Formula</b>: $v=\\omega R$ ⇒ $\\omega=\\frac{v}{R}$.</p>
+        <div class="formula">$$\\omega=\\frac{2}{0{,}2}=10\\,\\text{rad/s}$$</div>
+        <p><b>Risposta</b>: E.</p>
+      `
+    },
+    {
+      id: "ex11",
+      title: "MRUA – segno dell’accelerazione",
+      text: "Un oggetto si muove con moto rettilineo uniformemente accelerato per $t=5\\,\\text{s}$, percorrendo $d=8\\,\\text{m}$. La velocità iniziale è $v_0=2\\,\\text{m/s}$. Quale affermazione è corretta?",
+      options: [
+        ["A", "$a$ e $v_f$ hanno lo stesso verso di $v_0$"],
+        ["B", "$a$ ha verso opposto a $v_0$, $v_f=0$"],
+        ["C", "$a$ ha verso opposto a $v_0$; $v_f$ ha lo stesso verso di $v_0$"],
+        ["D", "$a$ ha lo stesso verso di $v_0$, $v_f=0$"],
+        ["E", "$a$ ha lo stesso verso di $v_0$, $v_f$ ha verso opposto"]
+      ],
+      correct: "C",
+      solution: `
+        <p><b>Passo 1</b>: uso la legge oraria con $s_0=0$ (scelgo verso positivo come quello di $v_0$).</p>
+        <div class="formula">$$d=v_0t+\\frac12at^2$$</div>
+        <p>Sostituisco: $8=2\\cdot 5+\\frac12a\\cdot 25$ ⇒ $8=10+12{,}5a$ ⇒</p>
+        <div class="formula">$$a=\\frac{-2}{12{,}5}=-0{,}16\\,\\text{m/s}^2$$</div>
+        <p>Quindi $a$ è <b>opposta</b> a $v_0$.</p>
+        <p><b>Passo 2</b>: $v_f=v_0+at=2+(-0{,}16)\\cdot 5=1{,}2\\,\\text{m/s}$, ancora positivo ⇒ stesso verso di $v_0$.</p>
+        <p><b>Risposta</b>: C.</p>
+        <p><b>Errore tipico</b>: pensare che se $a$ è opposta allora il corpo si fermi sempre (non è detto: dipende dai valori).</p>
+      `
+    },
+    {
+      id: "ex12",
+      title: "MRUA – accelerazione da $v$ e $s$",
+      text: "Un'auto, partendo da ferma, accelera uniformemente raggiungendo $v=40\\,\\text{m/s}$ dopo aver percorso $s=80\\,\\text{m}$. Qual è l'accelerazione?",
+      options: [
+        ["A", "$10\\,\\text{m/s}^2$"],
+        ["B", "$5\\,\\text{m/s}^2$"],
+        ["C", "$7\\,\\text{m/s}^2$"],
+        ["D", "$1\\,\\text{m/s}^2$"],
+        ["E", "$15\\,\\text{m/s}^2$"]
+      ],
+      correct: "A",
+      solution: `
+        <p><b>Formula senza tempo</b>: $v^2=v_0^2+2as$ con $v_0=0$.</p>
+        <div class="formula">$$a=\\frac{v^2}{2s}=\\frac{40^2}{2\\cdot 80}=\\frac{1600}{160}=10\\,\\text{m/s}^2$$</div>
+        <p><b>Risposta</b>: A.</p>
+      `
+    },
+    {
+      id: "ex13",
+      title: "Frenata – spazio percorso",
+      text: "Un corpo si muove lungo una traiettoria orizzontale con velocità iniziale $v_0=10\\,\\text{m/s}$ e si ferma dopo $t=10\\,\\text{s}$. Quanto spazio percorre se l'accelerazione (negativa) è costante?",
+      options: [
+        ["A", "$25\\,\\text{m}$"],
+        ["B", "$30\\,\\text{m}$"],
+        ["C", "$40\\,\\text{m}$"],
+        ["D", "$5\\,\\text{m}$"],
+        ["E", "$50\\,\\text{m}$"]
+      ],
+      correct: "E",
+      solution: `
+        <p><b>Metodo 1</b>: velocità media in MRUA: $\\bar v=\\frac{v_0+v_f}{2}$ con $v_f=0$.</p>
+        <div class="formula">$$\\bar v=\\frac{10+0}{2}=5\\,\\text{m/s}$$</div>
+        <p>Quindi $s=\\bar v\\,t=5\\cdot 10=50\\,\\text{m}$.</p>
+        <p><b>Risposta</b>: E.</p>
+      `
+    },
+    {
+      id: "ex14",
+      title: "Unità di misura – accelerazione centripeta",
+      text: "Nel Sistema Internazionale, l'unità di misura dell'accelerazione centripeta è:",
+      options: [
+        ["A", "$\\text{kg}\\,\\text{m}\\,\\text{s}^{-2}$"],
+        ["B", "$\\text{m}^2\\,\\text{s}^{-1}$"],
+        ["C", "$\\text{m}\\,\\text{s}^{-2}$"],
+        ["D", "$\\text{m}\\,\\text{s}^{-1}$"],
+        ["E", "$\\text{m}^{-2}\\,\\text{s}^{-2}$"]
+      ],
+      correct: "C",
+      solution: `
+        <p>Ogni accelerazione ha dimensioni di spazio su tempo al quadrato: $$[a]=\\frac{\\text{m}}{\\text{s}^2}.$$</p>
+        <p><b>Risposta</b>: C.</p>
+      `
+    },
+    {
+      id: "ex15",
+      title: "Centrifuga – raggio da $\\omega$ e $a_c$",
+      text: "Una centrifuga ruota con velocità angolare costante $\\omega=2\\,\\text{rad/s}$. Al suo interno l'accelerazione centripeta vale $4g$ con $g=10\\,\\text{m/s}^2$. Quanto è lungo il braccio (raggio) della centrifuga?",
+      options: [
+        ["A", "$2{,}5\\,\\text{m}$"],
+        ["B", "Non si può calcolare senza conoscere la massa"],
+        ["C", "$1\\,\\text{m}$"],
+        ["D", "$20\\,\\text{m}$"],
+        ["E", "$10\\,\\text{m}$"]
+      ],
+      correct: "E",
+      solution: `
+        <p><b>Formula</b>: $a_c=\\omega^2 r$.</p>
+        <p>Dato $a_c=4g=40\\,\\text{m/s}^2$:</p>
+        <div class="formula">$$r=\\frac{a_c}{\\omega^2}=\\frac{40}{(2)^2}=\\frac{40}{4}=10\\,\\text{m}$$</div>
+        <p><b>Risposta</b>: E.</p>
+      `
+    },
+    {
+      id: "ex16",
+      title: "Velocità relativa – due corridori",
+      text: "Due maratoneti corrono nello stesso senso con velocità $30\\,\\text{m/s}$ e $40\\,\\text{m/s}$. La velocità del primo rispetto al secondo vale:",
+      options: [
+        ["A", "Nessuna delle altre risposte è corretta"],
+        ["B", "$10\\,\\text{m/s}$"],
+        ["C", "$-10\\,\\text{m/s}$"],
+        ["D", "$20\\,\\text{m/s}$"],
+        ["E", "Nulla"]
+      ],
+      correct: "C",
+      solution: `
+        <p><b>Definizione</b>: $v_{1/2}=v_1-v_2$ (stessa direzione/verso positivo in avanti).</p>
+        <div class="formula">$$v_{1/2}=30-40=-10\\,\\text{m/s}$$</div>
+        <p><b>Risposta</b>: C.</p>
+      `
+    },
+    {
+      id: "ex17",
+      title: "Velocità media – 100 m (stima)",
+      text: "Il record dei 100 m piani è stato ottenuto con il tempo di $9{,}83\\,\\text{s}$. Qual è la velocità media approssimata?",
+      options: [
+        ["A", "$50\\,\\text{m/s}$"],
+        ["B", "$10\\,\\text{m/s}$"],
+        ["C", "$25\\,\\text{m/s}$"],
+        ["D", "$45\\,\\text{m/s}$"],
+        ["E", "$35\\,\\text{m/s}$"]
+      ],
+      correct: "B",
+      solution: `
+        <p>Velocità media: $v_m=\\frac{s}{t}$.</p>
+        <div class="formula">$$v_m\\approx\\frac{100}{9{,}83}\\approx 10{,}2\\,\\text{m/s}$$</div>
+        <p><b>Risposta</b>: B.</p>
+      `
+    },
+    {
+      id: "ex18",
+      title: "Moto parabolico – componente costante",
+      text: "Una palla da golf è lanciata con angolo $30^\\circ$ rispetto all'orizzontale e (trascurando attriti) segue una traiettoria parabolica. Quale affermazione è corretta?",
+      options: [
+        ["A", "L'accelerazione è nulla lungo tutta la traiettoria"],
+        ["B", "L'accelerazione è diretta verso l'alto"],
+        ["C", "La componente verticale della velocità è costante"],
+        ["D", "La componente orizzontale della velocità è costante"],
+        ["E", "Al culmine la velocità è nulla"]
+      ],
+      correct: "D",
+      solution: `
+        <p>Nel moto parabolico (senza attrito): $a_x=0$ e $a_y=-g$.</p>
+        <p>Quindi $v_x$ resta costante, mentre $v_y$ varia nel tempo.</p>
+        <p><b>Risposta</b>: D.</p>
+      `
+    },
+    {
+      id: "ex19",
+      title: "Accelerazione media – decollo aereo",
+      text: "Un aereo, partendo da fermo, raggiunge in $40\\,\\text{s}$ la velocità di decollo di $360\\,\\text{km/h}$. Qual è l'accelerazione media?",
+      options: [
+        ["A", "$1{,}0\\,g$"],
+        ["B", "$0{,}5\\,g$"],
+        ["C", "$1{,}0\\,\\text{m/s}^2$"],
+        ["D", "$2{,}5\\,\\text{m/s}^2$"],
+        ["E", "$10\\,\\text{m/s}^2$"]
+      ],
+      correct: "D",
+      solution: `
+        <p>Converto $360\\,\\text{km/h}$: $360/3{,}6=100\\,\\text{m/s}$.</p>
+        <div class="formula">$$a_m=\\frac{\\Delta v}{\\Delta t}=\\frac{100-0}{40}=2{,}5\\,\\text{m/s}^2$$</div>
+        <p><b>Risposta</b>: D.</p>
+      `
+    },
+    {
+      id: "ex20",
+      title: "MCU – relazione corretta per il periodo",
+      text: "Un punto compie moto circolare uniforme. Con $r$ raggio e $v$ velocità tangenziale, quale espressione per il periodo $T$ è corretta?",
+      options: [
+        ["A", "$T=\\dfrac{v}{2\\pi r}$"],
+        ["B", "$T=\\dfrac{2\\pi r}{v}$"],
+        ["C", "$T=\\dfrac{f}{\\pi}$"],
+        ["D", "$T=\\omega\\,v$"],
+        ["E", "$T=\\dfrac{\\pi}{v}$"]
+      ],
+      correct: "B",
+      solution: `
+        <p>In un periodo si percorre una circonferenza: $2\\pi r$.</p>
+        <div class="formula">$$v=\\frac{2\\pi r}{T}\\Rightarrow T=\\frac{2\\pi r}{v}$$</div>
+        <p><b>Risposta</b>: B.</p>
+        <p><b>Controllo dimensionale</b>: $[T]=[L]/[L/T]=[T]$.</p>
+      `
+    },
+    {
+      id: "ex21",
+      title: "Treno – giunzioni rotaie (conteggio segnali)",
+      text: "Un treno passa su giunzioni ogni $18\\,\\text{m}$. In $120\\,\\text{s}$ si contano $121$ segnali (cronometro avviato al primo segnale). A che velocità viaggia il treno?",
+      options: [
+        ["A", "$64{,}26\\,\\text{km/h}$"],
+        ["B", "$64{,}80\\,\\text{km/h}$"],
+        ["C", "$65{,}34\\,\\text{km/h}$"],
+        ["D", "$65{,}88\\,\\text{km/h}$"],
+        ["E", "$66{,}42\\,\\text{km/h}$"]
+      ],
+      correct: "B",
+      solution: `
+        <p>Se il cronometro parte al <i>primo</i> segnale, tra 121 segnali ci sono 120 intervalli.</p>
+        <div class="formula">$$s=120\\cdot 18=2160\\,\\text{m}$$</div>
+        <p>Allora $v=\\frac{s}{t}=\\frac{2160}{120}=18\\,\\text{m/s}=18\\cdot 3{,}6=64{,}8\\,\\text{km/h}$.</p>
+        <p><b>Risposta</b>: B.</p>
+      `
+    },
+    {
+      id: "ex22",
+      title: "Grafico spazio-tempo – velocità costante",
+      text: "Se la velocità di un'automobile è costante, quale grafico rappresenta l'andamento dello spazio $s$ in funzione del tempo $t$?",
+      options: [
+        ["A", "Una retta orizzontale (spazio costante)"],
+        ["B", "Una retta decrescente"],
+        ["C", "Una retta crescente"],
+        ["D", "Una curva crescente (parabola)"],
+        ["E", "Una curva decrescente"]
+      ],
+      correct: "C",
+      solution: `
+        <p>In MRU: $s(t)=s_0+vt$ con $v$ costante ⇒ $s$ cresce linearmente con $t$.</p>
+        <p><b>Risposta</b>: C.</p>
+      `
+    },
+    {
+      id: "ex23",
+      title: "MRUA – accelerazione da spazio e tempo (da fermo)",
+      text: "Un'automobile parte da ferma e percorre $1\\,\\text{km}$ in $25\\,\\text{s}$ con accelerazione costante. Quanto vale l'accelerazione?",
+      options: [
+        ["A", "$80\\,\\text{m/s}^2$"],
+        ["B", "$3{,}2\\,\\text{m/s}^2$"],
+        ["C", "$1{,}6\\,\\text{m/s}^2$"],
+        ["D", "$1{,}6\\,\\text{m/s}$"],
+        ["E", "$40\\,\\text{m/s}^2$"]
+      ],
+      correct: "B",
+      solution: `
+        <p>Da fermo: $s=\\frac12 a t^2$ con $s=1000\\,\\text{m}$.</p>
+        <div class="formula">$$a=\\frac{2s}{t^2}=\\frac{2000}{25^2}=\\frac{2000}{625}=3{,}2\\,\\text{m/s}^2$$</div>
+        <p><b>Risposta</b>: B.</p>
+      `
+    },
+    {
+      id: "ex24",
+      title: "100 m in due fasi (accelera poi velocità costante)",
+      text: "Un atleta corre i $100\\,\\text{m}$: percorre i primi $18\\,\\text{m}$ in $3\\,\\text{s}$ con accelerazione costante (partenza da fermo), poi prosegue a velocità costante. Qual è il tempo totale?",
+      options: [
+        ["A", "$9{,}83\\,\\text{s}$"],
+        ["B", "$10{,}00\\,\\text{s}$"],
+        ["C", "$11{,}20\\,\\text{s}$"],
+        ["D", "$9{,}95\\,\\text{s}$"],
+        ["E", "$8{,}85\\,\\text{s}$"]
+      ],
+      correct: "A",
+      solution: `
+        <p><b>Fase 1 (0→3 s)</b>: $s_1=\\frac12 a t_1^2$ ⇒ $18=\\frac12 a\\cdot 9$ ⇒ $a=4\\,\\text{m/s}^2$.</p>
+        <p>Velocità al termine della fase 1: $v_1=at_1=4\\cdot 3=12\\,\\text{m/s}$.</p>
+        <p><b>Fase 2</b>: spazio rimanente $s_2=100-18=82\\,\\text{m}$ a velocità costante $12\\,\\text{m/s}$:</p>
+        <div class="formula">$$t_2=\\frac{82}{12}\\approx 6{,}83\\,\\text{s}$$</div>
+        <p>Tempo totale: $t=t_1+t_2=3+6{,}83=9{,}83\\,\\text{s}$.</p>
+        <p><b>Risposta</b>: A.</p>
+      `
+    },
+    {
+      id: "ex25",
+      title: "Decelerazione – da km/h a m/s",
+      text: "Il tempo di frenata di una moto che passa da $90$ a $40\\,\\text{km/h}$ è $3\\,\\text{s}$. Il modulo dell'accelerazione è:",
+      options: [
+        ["A", "Nullo"],
+        ["B", "Circa $g$"],
+        ["C", "Circa $g/2$"],
+        ["D", "Circa $2g$"],
+        ["E", "Infinito"]
+      ],
+      correct: "C",
+      solution: `
+        <p>Converto: $90\\,\\text{km/h}=25\\,\\text{m/s}$, $40\\,\\text{km/h}\\approx 11{,}1\\,\\text{m/s}$.</p>
+        <div class="formula">$$|a|=\\left|\\frac{\\Delta v}{\\Delta t}\\right|=\\left|\\frac{11{,}1-25}{3}\\right|\\approx \\frac{13{,}9}{3}\\approx 4{,}6\\,\\text{m/s}^2$$</div>
+        <p>Poiché $g\\approx 9{,}8\\,\\text{m/s}^2$, vale circa $g/2$.</p>
+        <p><b>Risposta</b>: C.</p>
+      `
+    },
+    {
+      id: "ex26",
+      title: "Moto circolare – confronto con $g$ (entro 2%)",
+      text: "Un sasso ruota attorno a un centro fisso con filo lungo $r=1\\,\\text{m}$ e velocità angolare $\\omega=\\sqrt{10}\\,\\text{rad/s}$. Se $g$ è l'accelerazione di gravità, quale affermazione è corretta (entro il 2%)?",
+      options: [
+        ["A", "È sottoposto a un'accelerazione pari a $1g$"],
+        ["B", "È sottoposto a un'accelerazione pari a $10g$"],
+        ["C", "La velocità periferica è $10\\pi\\,\\text{m/s}$"],
+        ["D", "La velocità periferica è $\\pi^2\\,\\text{m/s}$"],
+        ["E", "La frequenza del moto è $2\\,\\text{Hz}$"]
+      ],
+      correct: "A",
+      solution: `
+        <p>In MCU: $a_c=\\omega^2 r$.</p>
+        <div class="formula">$$a_c=(\\sqrt{10})^2\\cdot 1=10\\,\\text{m/s}^2$$</div>
+        <p>Con $g\\approx 9{,}8\\,\\text{m/s}^2$, lo scarto è circa $\\frac{10-9{,}8}{10}=2\\%$ ⇒ circa $1g$.</p>
+        <p><b>Risposta</b>: A.</p>
+      `
+    },
+    {
+      id: "ex27",
+      title: "Barca e corrente – tempo minimo di attraversamento",
+      text: "Una barca attraversa un fiume puntando perpendicolarmente alla sponda con velocità costante $V$ rispetto all'acqua. Se l'acqua fosse ferma impiegherebbe un tempo $T$. Se la corrente è uniforme e vale $V$ (parallela alle sponde), qual è il tempo minimo per attraversare (a parità di $V$ rispetto all'acqua)?",
+      options: [
+        ["A", "$T/2$"],
+        ["B", "$T/\\sqrt{2}$"],
+        ["C", "$T$"],
+        ["D", "$2T$"],
+        ["E", "$2\\sqrt{T}$"]
+      ],
+      correct: "C",
+      solution: `
+        <p><b>Osservazione furba</b>: nel sistema di riferimento che si muove con la corrente, l'acqua è ferma e la barca ha sempre velocità $V$ perpendicolare alla sponda. Lo spazio da attraversare è lo stesso ⇒ il tempo resta $T$.</p>
+        <p><b>Risposta</b>: C.</p>
+      `
+    },
+    {
+      id: "ex28",
+      title: "Due piani inclinati – confronto tra velocità finali",
+      text: "Due corpi uguali A e B scivolano senza attrito lungo due piani inclinati di angolo $30^\\circ$ (A) e $60^\\circ$ (B), partendo dalla stessa altezza e arrivando a terra. Quale affermazione è corretta?",
+      options: [
+        ["A", "A impiega meno tempo di B"],
+        ["B", "La velocità finale di A è minore di quella di B"],
+        ["C", "A e B toccano terra con la stessa velocità"],
+        ["D", "A e B impiegano lo stesso tempo a toccare terra"],
+        ["E", "Nessuna delle precedenti"]
+      ],
+      correct: "C",
+      solution: `
+        <p>Senza attrito, l'energia potenziale $mgh$ si trasforma in energia cinetica $\\frac12mv^2$ indipendentemente dal percorso.</p>
+        <div class="formula">$$mgh=\\frac12mv^2\\Rightarrow v=\\sqrt{2gh}$$</div>
+        <p>Poiché $h$ è la stessa, anche $v$ finale è la stessa. I <b>tempi</b> invece in generale sono diversi (il piano più ripido dà accelerazione maggiore).</p>
+        <p><b>Risposta</b>: C.</p>
+      `
+    }
+  ];
+
+  // =================== RENDER EXERCISES ===================
+  const list = document.getElementById('exercise-list');
+
+  function renderExercises(){
+    list.innerHTML = exercises.map((ex, idx) => {
+      const opts = ex.options.map(([key, label]) => `
+        <div class="opt">
+          <input type="radio" id="${ex.id}-${key}" name="${ex.id}" value="${key}" />
+          <label for="${ex.id}-${key}"><b>${key}</b>) ${label}</label>
+        </div>
+      `).join("");
+
+      return `
+        <div class="card" id="${ex.id}" data-correct="${ex.correct}">
+          <div class="hd">
+            <h3>${idx+1}. ${ex.title}</h3>
+            <div class="tag">Risposta corretta: <b>${ex.correct}</b></div>
+          </div>
+
+          <div class="bd ex">
+            <div>
+              <div class="qtitle">Quesito</div>
+              <div class="qtext">${ex.text}</div>
+
+              <div class="qtitle" style="margin-top:12px;">Opzioni</div>
+              <div class="options">${opts}</div>
+            </div>
+
+            <div class="side">
+              <div class="timer" data-timer="${ex.id}">
+                <div class="tleft">
+                  <div class="tlabel">Timer esercizio (2:00)</div>
+                  <div class="tval" id="${ex.id}-tval">02:00</div>
+                </div>
+                <div style="width:100%">
+                  <div class="progress"><div class="bar" id="${ex.id}-bar"></div></div>
+                  <div class="toolbar" style="margin-top:10px;">
+                    <button class="btn primary" data-action="start" data-ex="${ex.id}">Avvia</button>
+                    <button class="btn" data-action="pause" data-ex="${ex.id}">Pausa</button>
+                    <button class="btn" data-action="reset" data-ex="${ex.id}">Reset</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="toolbar">
+                <button class="btn ok" data-action="check" data-ex="${ex.id}">Verifica</button>
+                <button class="btn" data-action="clear" data-ex="${ex.id}">Pulisci scelta</button>
+              </div>
+
+              <div class="result" id="${ex.id}-result" aria-live="polite">
+                <span class="dot" id="${ex.id}-dot"></span>
+                <span>Seleziona una risposta e premi <b>Verifica</b>.</span>
+              </div>
+
+              <details>
+                <summary>Mostra / nascondi svolgimento</summary>
+                <div class="sol">
+                  ${ex.solution}
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    // typeset MathJax after injecting HTML
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      window.MathJax.typesetPromise();
+    }
+  }
+
+  renderExercises();
+
+  // =================== TIMER ENGINE (per esercizio) ===================
+  const DURATION = 120; // seconds
+  const timers = new Map(); // exId -> { remaining, interval, running }
+
+  function fmt(sec){
+    const m = Math.floor(sec/60);
+    const s = sec % 60;
+    return String(m).padStart(2,'0') + ":" + String(s).padStart(2,'0');
+  }
+
+  function ensureTimer(exId){
+    if (!timers.has(exId)){
+      timers.set(exId, { remaining: DURATION, interval: null, running: false });
+    }
+    return timers.get(exId);
+  }
+
+  function updateTimerUI(exId){
+    const st = ensureTimer(exId);
+    const tval = document.getElementById(`${exId}-tval`);
+    const bar  = document.getElementById(`${exId}-bar`);
+    tval.textContent = fmt(st.remaining);
+    const pct = 100 * (1 - st.remaining / DURATION);
+    bar.style.width = `${pct}%`;
+
+    // color hint near end
+    if (st.remaining <= 10) bar.style.background = "linear-gradient(90deg, #ff5c7a, rgba(255,92,122,0.6))";
+    else if (st.remaining <= 30) bar.style.background = "linear-gradient(90deg, #ffd166, rgba(255,209,102,0.65))";
+    else bar.style.background = "linear-gradient(90deg, var(--accent), rgba(98,167,255,0.55))";
+  }
+
+  function stopTimer(exId){
+    const st = ensureTimer(exId);
+    if (st.interval) clearInterval(st.interval);
+    st.interval = null;
+    st.running = false;
+    updateTimerUI(exId);
+  }
+
+  function resetTimer(exId){
+    const st = ensureTimer(exId);
+    stopTimer(exId);
+    st.remaining = DURATION;
+    updateTimerUI(exId);
+  }
+
+  // Optional: allow only one running timer at a time (useful in class)
+  function stopAllExcept(exId){
+    timers.forEach((_, key) => { if (key !== exId) stopTimer(key); });
+  }
+
+  function startTimer(exId){
+    const st = ensureTimer(exId);
+    if (st.running) return;
+    stopAllExcept(exId);
+
+    st.running = true;
+    st.interval = setInterval(() => {
+      st.remaining -= 1;
+      updateTimerUI(exId);
+
+      if (st.remaining <= 0){
+        st.remaining = 0;
+        updateTimerUI(exId);
+        stopTimer(exId);
+
+        // visual cue on expiry
+        const card = document.getElementById(exId);
+        card.animate([
+          { boxShadow: "0 0 0 rgba(0,0,0,0)" },
+          { boxShadow: "0 0 0 6px rgba(255,92,122,0.35)" },
+          { boxShadow: "0 0 0 rgba(0,0,0,0)" }
+        ], { duration: 900, iterations: 2 });
+      }
+    }, 1000);
+
+    updateTimerUI(exId);
+  }
+
+  // =================== CHECK / CLEAR ===================
+  function setResult(exId, ok, msg){
+    const r = document.getElementById(`${exId}-result`);
+    const dot = document.getElementById(`${exId}-dot`);
+    dot.classList.remove('ok','bad');
+    if (ok === true) dot.classList.add('ok');
+    if (ok === false) dot.classList.add('bad');
+    r.innerHTML = `<span class="dot ${ok===true?'ok':ok===false?'bad':''}" id="${exId}-dot"></span><span>${msg}</span>`;
+  }
+
+  function getSelected(exId){
+    const nodes = document.querySelectorAll(`input[name="${exId}"]`);
+    for (const n of nodes) if (n.checked) return n.value;
+    return null;
+  }
+
+  function clearSelection(exId){
+    document.querySelectorAll(`input[name="${exId}"]`).forEach(n => n.checked = false);
+    setResult(exId, null, `Seleziona una risposta e premi <b>Verifica</b>.`);
+  }
+
+  function checkAnswer(exId){
+    const sel = getSelected(exId);
+    const correct = document.getElementById(exId).dataset.correct;
+    if (!sel){
+      setResult(exId, null, `Nessuna risposta selezionata.`);
+      return;
+    }
+    if (sel === correct){
+      setResult(exId, true, `<b>Corretto</b>. Hai scelto ${sel}.`);
+    } else {
+      setResult(exId, false, `<b>Non corretto</b>. Hai scelto ${sel}, la risposta corretta è <b>${correct}</b>.`);
+    }
+  }
+
+  // =================== EVENTS ===================
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+    const exId = btn.dataset.ex;
+
+    if (action === 'start') startTimer(exId);
+    if (action === 'pause') stopTimer(exId);
+    if (action === 'reset') resetTimer(exId);
+    if (action === 'check') checkAnswer(exId);
+    if (action === 'clear') clearSelection(exId);
+  });
+
+  // init timer UI
+  exercises.forEach(ex => updateTimerUI(ex.id));
+</script>
+</body>
+</html>
